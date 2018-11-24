@@ -1,0 +1,26 @@
+Traceback (most recent call last):
+  File "create_tss_from_gff_g4_functions.py", line 10, in <module>
+    gff_g4_functions.create_tss_from_gff3(base_dir)
+  File "/uufs/chpc.utah.edu/common/home/u0674686/scripts/python_scripts/gff_g4_functions.py", line 73, in create_tss_from_gff3
+    gff_tss=tss(gff) ## get the TSS out from genes
+  File "/uufs/chpc.utah.edu/common/home/u0674686/scripts/python_scripts/gff_g4_functions.py", line 36, in tss
+    tss.append((test.iloc[i]['seq_ID'],start,end, test.iloc[i]['attributes'].split(';')[0], '.', test.iloc[i]['strand']))
+  File "/uufs/chpc.utah.edu/common/home/u0674686/miniconda2/lib/python2.7/site-packages/pandas/core/indexing.py", line 1328, in __getitem__
+    return self._getitem_axis(key, axis=0)
+  File "/uufs/chpc.utah.edu/common/home/u0674686/miniconda2/lib/python2.7/site-packages/pandas/core/indexing.py", line 1751, in _getitem_axis
+    return self._get_loc(key, axis=axis)
+  File "/uufs/chpc.utah.edu/common/home/u0674686/miniconda2/lib/python2.7/site-packages/pandas/core/indexing.py", line 139, in _get_loc
+    return self.obj._ixs(key, axis=axis)
+  File "/uufs/chpc.utah.edu/common/home/u0674686/miniconda2/lib/python2.7/site-packages/pandas/core/frame.py", line 1899, in _ixs
+    dtype=new_values.dtype)
+  File "/uufs/chpc.utah.edu/common/home/u0674686/miniconda2/lib/python2.7/site-packages/pandas/core/series.py", line 250, in __init__
+    data = SingleBlockManager(data, index, fastpath=True)
+  File "/uufs/chpc.utah.edu/common/home/u0674686/miniconda2/lib/python2.7/site-packages/pandas/core/internals.py", line 4117, in __init__
+    fastpath=True)
+  File "/uufs/chpc.utah.edu/common/home/u0674686/miniconda2/lib/python2.7/site-packages/pandas/core/internals.py", line 2706, in make_block
+    elif is_datetimetz(values):
+  File "/uufs/chpc.utah.edu/common/home/u0674686/miniconda2/lib/python2.7/site-packages/pandas/core/dtypes/common.py", line 265, in is_datetimetz
+    is_datetime64tz_dtype(arr))
+  File "/uufs/chpc.utah.edu/common/home/u0674686/miniconda2/lib/python2.7/site-packages/pandas/core/dtypes/common.py", line 368, in is_datetime64tz_dtype
+    return DatetimeTZDtype.is_dtype(arr_or_dtype)
+KeyboardInterrupt
