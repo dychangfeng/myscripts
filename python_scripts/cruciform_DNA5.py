@@ -62,7 +62,7 @@ def get_cruci_list(seq_name, seq):
             if jump: ## find a match, stop looking for the smaller one
                     break # break from the loop scan
 
-            elif i==4: ## the last loop length, add 1 to cursor
+        else:  ## finish the for loop, add 1 to cursor
                 t+=1 # move the cursor 1 bp if didn't find any match
 
     return(cruci)
