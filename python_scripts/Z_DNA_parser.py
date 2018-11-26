@@ -4,6 +4,7 @@ import re
 import sys
 import string
 import argparse
+import operator
 
 parser = argparse.ArgumentParser(description="""
 
@@ -31,31 +32,6 @@ DESCRIPTION
     Note: Fasta sequences are read in memory one at a time. Also the bed file
     of of the matches are kept in memeory.
 
-EXAMPLE:
-    ## Test data:
-    echo '>mychr' > /tmp/mychr.fa
-    echo 'ACTGnACTGnACTGnTGAC' >> /tmp/mychr.fa
-
-    quadparser.py -f /tmp/mychr.fa -r 'ACTG'
-        mychr	0	4	mychr_0_4_for	4	+	ACTG
-        mychr	5	9	mychr_5_9_for	4	+	ACTG
-        mychr	10	14	mychr_10_14_for	4	+	ACTG
-        mychr	15	19	mychr_15_19_rev	4	-	TGAC
-
-
-    ls /tmp/mychr.fa | quadparser.py -f - -r 'A\w\wGn'
-        mychr	0	5	mychr_0_5_for	5	+	ACTGn
-        mychr	5	10	mychr_5_10_for	5	+	ACTGn
-        mychr	10	15	mychr_10_15_for	5	+	ACTGn
-
-DOWNLOAD
-    quadparser.py is hosted at http://code.google.com/p/bioinformatics-misc/
-
-TODO
-
-    - Better handling of forward and reverse matches (i.e. other than complementing
-      the forward regex?).
-    - Read sequence from stdin ('less myseq.fa | quadparser.py -f - ...').
     """, formatter_class= argparse.RawTextHelpFormatter)
 
 
@@ -64,10 +40,10 @@ parser.add_argument('--regex', '-r',
                    help='''Regex to be searched in the fasta input.
 Matches to this regex will have + strand. This string passed to python
 re.compile(). The default regex is '([Cc][gG]){5,}' which searches
-for G-quadruplexes.
+for Z-DNA.
 
                    ''',
-                   default= '([Cc][gG]){5,}'
+                   default= '([Cc][gG]){5,}')
 
 parser.add_argument('--regexrev', '-R',
                    type= str,
@@ -105,50 +81,18 @@ args = parser.parse_args()
 intab=  'actguACTGU'
 outtab= 'tgacaTGACA'
 if args.regexrev is None:
-    transtab = string.maketrans(intab, outtab)
+    transtab = str.maketrans(intab, outtab)
     regexrev= args.regex.translate(transtab)
 else:
     regexrev= args.regex
-
+# handle stdin
 if args.fasta == '-':
     args.fasta= sys.stdin.readlines()
     if len(args.fasta) > 1:
-        sys.exit('\nquadpareser.py: Only one input file at a time can be processed:\n--fasta/-f: %s\n' %(args.fasta))
+        sys.exit('\n Only one input file at a time can be processed:\n--fasta/-f: %s\n' %(args.fasta))
     args.fasta= args.fasta[0].strip()
 
 " ------------------------------[  Functions ]--------------------------------- "
-
-"""                               LIST SORTER
-Code to sort list of lists
-see http://www.saltycrane.com/blog/2007/12/how-to-sort-table-by-columns-in-python/
-"""
-import operator
-
-def sort_table(table, cols):
-    """ sort a table by multiple columns
-        table: a list of lists (or tuple of tuples) where each inner list
-               represents a row
-        cols:  a list (or tuple) specifying the column numbers to sort by
-               e.g. (1,0) would sort by column 1, then by column 0
-    """
-    for col in reversed(cols):
-        table = sorted(table, key=operator.itemgetter(col))
-    return(table)
-
-#if __name__ == '__main__':
-#    mytable = (
-#        ('Joe', 'Clark', '1989'),
-#        ('Charlie', 'Babbitt', '1988'),
-#        ('Frank', 'Abagnale', '2002'),
-#        ('Bill', 'Clark', '2009'),
-#        ('Alan', 'Clark', '1804'),
-#        )
-#    for row in sort_table(mytable, (1,0)):
-#        print(row)
-
-"""                           END of SORTER
------------------------------------------------------------------------------
-"""
 
 def reverse_comp(seq):
     """take a sequence and return the reverse complementary strand of this seq
@@ -188,7 +132,7 @@ while True:
     if line == '':
         break
 
-gquad_sorted= sort_table(gquad_list, (0,1,2,3))
+gquad_sorted= sorted(gquad_list, key=operator.itemgetter(0,1,2,3))
 
 for line in gquad_sorted:
     line= '\t'.join([str(x) for x in line])
